@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    # Install dependencies for root project
+    - name: Install root dependencies
+      run: npm ci
+      
+    # Client setup and tests
+    - name: Install client dependencies
+      working-directory: ./client
+      run: npm ci
+      
+    - name: Build client
+      working-directory: ./client
+      run: npm run build
+      
+    - name: Test client
+      working-directory: ./client
+      run: npm test -- --passWithNoTests
+      
+    # Server setup and tests
+    - name: Install server dependencies
+      working-directory: ./server
+      run: npm ci
+      
+    - name: Test server
+      working-directory: ./server
+      run: npm test -- --passWithNoTests
+
+    # Add any additional steps like linting, security scanning, etc.
+    - name: Run linting
+      run: |
+        npm run lint || true  # Don't fail if lint script doesn't exist 
