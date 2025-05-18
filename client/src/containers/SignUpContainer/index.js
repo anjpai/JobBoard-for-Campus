@@ -15,6 +15,9 @@ class SignUpContainer extends Component {
     lastName: '',
     email: '',
     password: '',
+    companyName: '',
+    companyEmail: '',
+    companyPhone: '',
     isProcessing: false,
     error: null,
   };
@@ -27,8 +30,8 @@ class SignUpContainer extends Component {
     e.preventDefault();
     this.setState({ isProcessing: true });
 
-    const { api, setUser, location } = this.props;
-    const { firstName, lastName, email, password } = this.state;
+    const { api, setUser, location, navigate } = this.props;
+    const { firstName, lastName, email, password, companyName, companyEmail, companyPhone } = this.state;
 
     let role = null;
 
@@ -43,13 +46,25 @@ class SignUpContainer extends Component {
         break;
     }
 
+    const data = {
+      firstName,
+      lastName,
+      email,
+      password,
+      ...(role === ROLES.COMPANY && {
+        companyName,
+        companyEmail,
+        companyPhone
+      })
+    };
+
     api
-      .signUp(role, { firstName, lastName, email, password })
+      .signUp(role, data)
       .then(response => {
         const { user, token } = response.data;
-
         localStorage.setItem('token', token);
         setUser({ user });
+        navigate(ROUTES.HOME);
       })
       .catch(error =>
         this.setState({
@@ -62,8 +77,17 @@ class SignUpContainer extends Component {
   dismissAlert = () => this.setState({ error: null });
 
   render() {
-    const { firstName, lastName, email, password, isProcessing, error } =
-      this.state;
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      companyName,
+      companyEmail,
+      companyPhone,
+      isProcessing,
+      error
+    } = this.state;
 
     return (
       <SignUp
@@ -71,6 +95,9 @@ class SignUpContainer extends Component {
         lastName={lastName}
         email={email}
         password={password}
+        companyName={companyName}
+        companyEmail={companyEmail}
+        companyPhone={companyPhone}
         handleChange={this.handleChange}
         handleSubmit={this.handleSubmit}
         isProcessing={isProcessing}

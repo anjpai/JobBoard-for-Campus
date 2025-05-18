@@ -2,7 +2,7 @@ import axios from 'axios';
 
 class API {
   constructor() {
-    axios.defaults.baseURL = 'http://localhost:8080';
+    axios.defaults.baseURL = 'http://localhost:5000';
     axios.defaults.headers.post['Content-Type'] = 'application/json';
   }
 
@@ -78,6 +78,29 @@ class API {
   updateProfile = data =>
     axios.patch(`/api/profile`, data, {
       headers: { 'Auth-Token': localStorage.getItem('token') },
+    });
+
+  // Student Profile Methods
+  updateStudentProfile = data =>
+    axios.patch('/api/profile', data, {
+      headers: { 'Auth-Token': localStorage.getItem('token') },
+    });
+
+  uploadResume = file => {
+    const formData = new FormData();
+    formData.append('resume', file);
+    return axios.post('/api/students/resume', formData, {
+      headers: { 
+        'Auth-Token': localStorage.getItem('token'),
+        'Content-Type': 'multipart/form-data'
+      },
+    });
+  };
+
+  downloadResume = studentId =>
+    axios.get(`/api/students/resume/${studentId}`, {
+      headers: { 'Auth-Token': localStorage.getItem('token') },
+      responseType: 'blob'
     });
 }
 

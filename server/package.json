@@ -6,8 +6,7 @@
     "start": "nodemon src/index.js"
   },
   "author": {
-    "name": "Safdar Jamal",
-    "url": "https://safdarjamal.github.io"
+    "name": "Anjali R Pai"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -18,7 +17,8 @@
     "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.5.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

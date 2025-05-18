@@ -8,6 +8,7 @@ import API, { APIContext } from './services/api';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './containers/App';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/theme.css';
 import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

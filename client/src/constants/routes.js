@@ -13,6 +13,7 @@ const JOBS = '/home/jobs';
 const JOBS_NEW = '/home/jobs/new';
 const PROFILE = '/home/profile';
 const PROFILE_EDIT = '/home/profile/edit';
+export const STUDENT_PROFILE = '/student/profile';
 
 export {
   LANDING,
