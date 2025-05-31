@@ -38,10 +38,18 @@ A web-based platform that facilitates campus recruitment by connecting students,
    - Student: Create new account
    - Company: Create new account
      
-## Application Snapshots
+## Visual Overview 
 
 1. Home Page
 ![image](https://github.com/user-attachments/assets/e7a9f1c9-33b8-46bc-a8f0-71cda1367cac)
+
+2. Sign up Page
+![image](https://github.com/user-attachments/assets/e30abfd1-50f9-4c38-8d74-bebc08f93e41)
+
+3.Login Page
+![image](https://github.com/user-attachments/assets/f88df474-e7e7-4dc4-bcdc-9c4a98d170d7)
+
+
 
 ## Author
 
