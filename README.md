@@ -37,6 +37,19 @@ A web-based platform that facilitates campus recruitment by connecting students,
    - Admin: admin@campus.com / Admin123
    - Student: Create new account
    - Company: Create new account
+     
+## Visual Overview 
+
+1. Home Page
+![image](https://github.com/user-attachments/assets/e7a9f1c9-33b8-46bc-a8f0-71cda1367cac)
+
+2. Sign up Page
+![image](https://github.com/user-attachments/assets/e30abfd1-50f9-4c38-8d74-bebc08f93e41)
+
+3.Login Page
+![image](https://github.com/user-attachments/assets/f88df474-e7e7-4dc4-bcdc-9c4a98d170d7)
+
+
 
 ## Author
 
@@ -106,9 +119,7 @@ npm run client
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
