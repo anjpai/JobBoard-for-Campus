@@ -9,8 +9,8 @@ const Footer = () => {
         fixed="bottom"
       >
         <Navbar.Text>
-          © 2024{' '}
-          <span className="text-white">Anjali R Pai</span>
+          © 2025{' '}
+          <span className="text-white">Campus Recruitment System</span>
         </Navbar.Text>
       </Navbar>
     </footer>

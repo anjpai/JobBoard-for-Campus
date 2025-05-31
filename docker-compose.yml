@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    environment:
+      - MONGO_DB_URI=mongodb+srv://rpaianju15:ud4l6OMYMYQvl8L4@campusrecruitment.yhnkc2u.mongodb.net/?retryWrites=true&w=majority&appName=CampusRecruitment
+      - JWT_SECRET=mySuperSecretJWTkey123!
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:6.0
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+
+volumes:
+  mongodb_data:

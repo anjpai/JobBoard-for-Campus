@@ -3,7 +3,9 @@
   "version": "2.1.0",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon src/index.js"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"No tests specified\" && exit 0"
   },
   "author": {
     "name": "Anjali R Pai"
