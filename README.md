@@ -37,6 +37,11 @@ A web-based platform that facilitates campus recruitment by connecting students,
    - Admin: admin@campus.com / Admin123
    - Student: Create new account
    - Company: Create new account
+     
+## Application Snapshots
+
+1. Home Page
+![image](https://github.com/user-attachments/assets/e7a9f1c9-33b8-46bc-a8f0-71cda1367cac)
 
 ## Author
 
