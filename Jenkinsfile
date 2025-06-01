@@ -66,14 +66,21 @@ pipeline {
         stage('ZAP Baseline Scan') {
             steps {
                 script {
-                    docker.image('ghcr.io/zaproxy/zaproxy:stable').inside {
+                    def zapImage = docker.image('ghcr.io/zaproxy/zaproxy:stable')
+                    zapImage.pull()
+
+                    // Mount Windows workspace to /workspace inside container
+                    zapImage.inside("-v ${env.WORKSPACE.replace('\\', '/') }:/workspace") {
+                        // Run Linux shell commands inside /workspace folder
                         bat '''
+                            cd /workspace
                             zap-baseline.py -t http://host.docker.internal:3000 -r zap-report.html
                         '''
                     }
                 }
             }
         }
+
 
 
 
