@@ -74,7 +74,7 @@ Built and maintained by Anjali R Pai.
 ### Prerequisites
 - Node.js (v14 or higher)
 - MongoDB
-- npm or yarn
+- npm
 
 ### Installation
 
