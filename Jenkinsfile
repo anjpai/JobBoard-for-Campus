@@ -23,18 +23,14 @@ pipeline {
             }
         }
 
-        // Optional: Remove or comment out the "Start" stage for production CI/CD pipelines
-        // or replace it with build commands if needed.
-
         stage('Build Docker Images') {
             steps {
                 script {
-                    bat "docker build -t rpaianjali/jobboardforcampus-server:${env.BUILD_ID} -f server/dockerfile server"
-                    bat "docker build -t rpaianjali/jobboardforcampus-client:${env.BUILD_ID} -f client/dockerfile client"
+                    bat "docker build -t rpaianjali/jobboardforcampus-server:${env.BUILD_ID} -f server/Dockerfile server"
+                    bat "docker build -t rpaianjali/jobboardforcampus-client:${env.BUILD_ID} -f client/Dockerfile client"
                 }
             }
         }
-
 
         stage('Push Images') {
             steps {
@@ -49,8 +45,11 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'docker-compose down || true'
-                sh 'docker-compose up -d'
+                script {
+                    // Try to bring down previous containers, ignore errors
+                    bat 'docker-compose down || exit 0'
+                    bat 'docker-compose up -d'
+                }
             }
         }
     }
