@@ -62,9 +62,16 @@ pipeline {
                 }
             }
         }
-        stage('OWASP ZAP Scan') {
+
+        stage('ZAP Baseline Scan') {
             steps {
-                bat 'docker run -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:3000 -r zap-report.html'
+                script {
+                    docker.image('ghcr.io/zaproxy/zaproxy:stable').inside {
+                        bat '''
+                            zap-baseline.py -t http://host.docker.internal:3000 -r zap-report.html
+                        '''
+                    }
+                }
             }
         }
 
