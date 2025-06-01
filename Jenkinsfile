@@ -14,15 +14,15 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
-                sh 'cd client && npm install'
+                bat 'npm install'
+                bat 'cd client && npm install'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm test || true'  // Prevent build from failing if no test scripts
-                sh 'cd client && npm test || true'
+                bat 'npm test || true'  // Prevent build from failing if no test scripts
+                bat 'cd client && npm test || true'
             }
         }
 
