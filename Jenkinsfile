@@ -1,3 +1,10 @@
+def toDockerPath(winPath) {
+    // Converts C:\foo\bar to /c/foo/bar
+    winPath = winPath.replaceAll('\\\\', '/')
+    winPath = winPath.replaceAll('^([A-Za-z]):', '/$1')
+    return winPath.toLowerCase()
+}
+
 pipeline {
     agent any
 
@@ -66,20 +73,18 @@ pipeline {
         stage('ZAP Baseline Scan') {
             steps {
                 script {
-                    def zapImage = docker.image('ghcr.io/zaproxy/zaproxy:stable')
-                    zapImage.pull()
-
-                    // Mount Windows workspace to /workspace inside container
-                    zapImage.inside("-v ${env.WORKSPACE.replace('\\', '/') }:/workspace") {
-                        // Run Linux shell commands inside /workspace folder
-                        bat '''
-                            cd /workspace
-                            zap-baseline.py -t http://host.docker.internal:3000 -r zap-report.html
-                        '''
-                    }
+                    def linuxPath = toDockerPath(env.WORKSPACE)
+                    // Run ZAP in Docker, mounting workspace to /zap/wrk
+                    sh """
+                        docker run --rm -v "${linuxPath}:/zap/wrk" \
+                        ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
+                        -t http://host.docker.internal:3000 \
+                        -r zap-report.html
+                    """
                 }
             }
         }
+
 
 
 
