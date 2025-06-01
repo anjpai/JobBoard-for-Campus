@@ -19,10 +19,10 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Start') {
             steps {
-                bat 'npm test || true'  // Prevent build from failing if no test scripts
-                bat 'cd client && npm test || true'
+                bat 'npm start || true'  // Prevent build from failing if no test scripts
+                bat 'cd client && npm start || true'
             }
         }
 
@@ -39,8 +39,8 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('', 'dockerhub-creds') {
-                        docker.image("anjpai/jobboard-server:${env.BUILD_ID}").push()
-                        docker.image("anjpai/jobboard-client:${env.BUILD_ID}").push()
+                        docker.image("rpaianjali/jobboardforcampus-server:${env.BUILD_ID}").push()
+                        docker.image("rpaianjali/jobboardforcampus-client:${env.BUILD_ID}").push()
                     }
                 }
             }
