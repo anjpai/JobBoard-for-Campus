@@ -73,21 +73,14 @@ pipeline {
             steps {
                 script {
                     def linuxPath = toDockerPath(env.WORKSPACE)
-                    // On Windows, we can't use returnStatus easily, so we run and ignore the error
-                    // You can use a try-catch block in Groovy to ignore the error, or use a wrapper script
-                    // Here's a simple solution using a wrapper script (recommended)
-                    // Create a file named run_zap.bat in your workspace:
-                    /*
-                    @echo off
-                    docker run --rm -v "%1:/zap/wrk" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://host.docker.internal:3000 -r zap-report.html -l FAIL -I
-                    exit /b 0
-                    */
-                    // Then in your pipeline:
-                    bat "run_zap.bat \"${linuxPath}\""
-                    // Or, if you don't want to create a file, you can use this:
+                    // Use conditional error handling in the bat command
                     bat """
-                        docker run --rm -v "${linuxPath}:/zap/wrk" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://host.docker.internal:3000 -r zap-report.html -l FAIL -I
-                        exit 0
+                        docker run --rm -v "${linuxPath}:/zap/wrk" ^
+                          ghcr.io/zaproxy/zaproxy:stable zap-baseline.py ^
+                          -t http://host.docker.internal:3000 ^
+                          -r zap-report.html ^
+                          -l FAIL ^
+                          -I || exit 0
                     """
                 }
             }
