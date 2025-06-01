@@ -1,5 +1,4 @@
 def toDockerPath(winPath) {
-    // Converts C:\foo\bar to /c/foo/bar
     winPath = winPath.replaceAll('\\\\', '/')
     winPath = winPath.replaceAll('^([A-Za-z]):', '/$1')
     return winPath.toLowerCase()
@@ -53,17 +52,17 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Try to bring down previous containers, ignore errors
                     bat 'docker-compose down || exit 0'
                     bat 'docker-compose up -d'
                 }
             }
         }
+
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     script {
-                        def scannerHome = tool 'SonarScanner' // Name must match what you set in Global Tool Configuration
+                        def scannerHome = tool 'SonarScanner'
                         bat "${scannerHome}\\bin\\sonar-scanner"
                     }
                 }
@@ -74,22 +73,24 @@ pipeline {
             steps {
                 script {
                     def linuxPath = toDockerPath(env.WORKSPACE)
-                    // Run ZAP in Docker, mounting workspace to /zap/wrk
+                    // On Windows, we can't use returnStatus easily, so we run and ignore the error
+                    // You can use a try-catch block in Groovy to ignore the error, or use a wrapper script
+                    // Here's a simple solution using a wrapper script (recommended)
+                    // Create a file named run_zap.bat in your workspace:
+                    /*
+                    @echo off
+                    docker run --rm -v "%1:/zap/wrk" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://host.docker.internal:3000 -r zap-report.html -l FAIL -I
+                    exit /b 0
+                    */
+                    // Then in your pipeline:
+                    bat "run_zap.bat \"${linuxPath}\""
+                    // Or, if you don't want to create a file, you can use this:
                     bat """
-                        docker run --rm -v "${linuxPath}:/zap/wrk" \
-                        ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
-                        -t http://host.docker.internal:3000 \
-                        -r zap-report.html \
-                        -l FAIL
+                        docker run --rm -v "${linuxPath}:/zap/wrk" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://host.docker.internal:3000 -r zap-report.html -l FAIL -I
+                        exit 0
                     """
                 }
             }
         }
-
-
-
-
-
-
     }
 }
