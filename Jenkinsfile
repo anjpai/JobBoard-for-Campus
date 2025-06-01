@@ -25,16 +25,14 @@ pipeline {
 
         stage('Start') {
             steps {
-                bat '''
-                    set MONGO_DB_URI=%MONGO_DB_URI%
-                    set JWT_SECRET=%JWT_SECRET%
-                    set HOST=%HOST%
-                    set PORT=%PORT%
-                    npm start || true
-                '''
-                bat '''
-                    cd client
-                    npm start || true
+                // Use PowerShell for better environment handling on Windows
+                powershell '''
+                    $env:MONGO_DB_URI = "${env.MONGO_DB_URI}"
+                    $env:JWT_SECRET = "${env.JWT_SECRET}"
+                    $env:HOST = "${env.HOST}"
+                    $env:PORT = "${env.PORT}"
+
+                    npm start
                 '''
             }
         }
@@ -61,8 +59,9 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'docker-compose down || true'
-                sh 'docker-compose up -d'
+                // Assuming docker-compose is available on your Windows agent
+                bat 'docker-compose down || exit 0'
+                bat 'docker-compose up -d'
             }
         }
     }
