@@ -29,8 +29,8 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    sh "docker build -t rpaianjali/jobboardforcampus-server:${env.BUILD_ID} -f server/dockerfile server"
-                    sh "docker build -t rpaianjali/jobboardforcampus-client:${env.BUILD_ID} -f client/dockerfile client"
+                    bat "docker build -t rpaianjali/jobboardforcampus-server:${env.BUILD_ID} -f server/dockerfile server"
+                    bat "docker build -t rpaianjali/jobboardforcampus-client:${env.BUILD_ID} -f client/dockerfile client"
                 }
             }
         }
