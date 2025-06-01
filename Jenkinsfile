@@ -23,19 +23,8 @@ pipeline {
             }
         }
 
-        stage('Start') {
-            steps {
-                // Use PowerShell for better environment handling on Windows
-                powershell '''
-                    $env:MONGO_DB_URI = "${env.MONGO_DB_URI}"
-                    $env:JWT_SECRET = "${env.JWT_SECRET}"
-                    $env:HOST = "${env.HOST}"
-                    $env:PORT = "${env.PORT}"
-
-                    npm start
-                '''
-            }
-        }
+        // Optional: Remove or comment out the "Start" stage for production CI/CD pipelines
+        // or replace it with build commands if needed.
 
         stage('Build Docker Images') {
             steps {
@@ -59,9 +48,8 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                // Assuming docker-compose is available on your Windows agent
-                bat 'docker-compose down || exit 0'
-                bat 'docker-compose up -d'
+                sh 'docker-compose down || true'
+                sh 'docker-compose up -d'
             }
         }
     }
