@@ -79,7 +79,8 @@ pipeline {
                         docker run --rm -v "${linuxPath}:/zap/wrk" \
                         ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
                         -t http://host.docker.internal:3000 \
-                        -r zap-report.html
+                        -r zap-report.html \
+                        -l FAIL
                     """
                 }
             }
