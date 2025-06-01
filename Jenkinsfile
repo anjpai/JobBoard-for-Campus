@@ -29,11 +29,12 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    docker.build("rpaianjali/jobboardforcampus-server:${env.BUILD_ID}", '.')
-                    docker.build("rpaianjali/jobboardforcampus-client:${env.BUILD_ID}", './client')
+                    sh "docker build -t rpaianjali/jobboardforcampus-server:${env.BUILD_ID} -f server/dockerfile server"
+                    sh "docker build -t rpaianjali/jobboardforcampus-client:${env.BUILD_ID} -f client/dockerfile client"
                 }
             }
         }
+
 
         stage('Push Images') {
             steps {
