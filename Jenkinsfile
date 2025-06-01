@@ -13,6 +13,7 @@ pipeline {
         JWT_SECRET = credentials('JWT_SECRET')
         HOST = '0.0.0.0'
         PORT = '5000'
+        SONAR_TOKEN = credentials('sonarqube-token')
     }
 
     stages {
@@ -60,14 +61,17 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    script {
-                        def scannerHome = tool 'SonarScanner'
-                        bat "${scannerHome}\\bin\\sonar-scanner"
+                withSonarQubeEnv('SonarQube') { // Name as configured in Jenkins
+                    withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                        script {
+                            def scannerHome = tool 'SonarScanner'
+                            bat "\"${scannerHome}\\bin\\sonar-scanner\" -Dsonar.token=%SONAR_TOKEN%"
+                        }
                     }
                 }
             }
         }
+
 
         stage('ZAP Baseline Scan') {
             steps {
