@@ -54,11 +54,15 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {  // Use your actual SonarQube server name here
-                    bat 'SonarScanner'
+                withSonarQubeEnv('SonarQube') {
+                    script {
+                        def scannerHome = tool 'SonarScanner' // Name must match what you set in Global Tool Configuration
+                        bat "${scannerHome}\\bin\\sonar-scanner"
+                    }
                 }
             }
         }
+
 
 
     }
