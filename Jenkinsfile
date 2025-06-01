@@ -2,7 +2,11 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDS = credentials('dockerhub-creds') // From step 7
+        DOCKERHUB_CREDS = credentials('dockerhub-creds')
+        MONGO_DB_URI = credentials('MONGO_DB_URI')
+        JWT_SECRET = credentials('JWT_SECRET')
+        HOST = '0.0.0.0'
+        PORT = '5000'
     }
 
     stages {
@@ -21,8 +25,17 @@ pipeline {
 
         stage('Start') {
             steps {
-                bat 'npm start || true'  // Prevent build from failing if no test scripts
-                bat 'cd client && npm start || true'
+                bat '''
+                    set MONGO_DB_URI=%MONGO_DB_URI%
+                    set JWT_SECRET=%JWT_SECRET%
+                    set HOST=%HOST%
+                    set PORT=%PORT%
+                    npm start || true
+                '''
+                bat '''
+                    cd client
+                    npm start || true
+                '''
             }
         }
 
