@@ -53,31 +53,41 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
+                    // Pass environment variables to docker-compose via .env file or CLI
+                    // Here we create a temporary .env file with needed variables
+                    writeFile file: '.env', text: """
+                    MONGO_DB_URI=${env.MONGO_DB_URI}
+                    JWT_SECRET=${env.JWT_SECRET}
+                    HOST=${env.HOST}
+                    PORT=${env.PORT}
+                    """
+
+                    // Stop and remove existing containers, ignoring errors
                     bat 'docker-compose down || exit 0'
-                    bat 'docker-compose up -d'
+
+                    // Start containers with detached mode and force recreate to pick new images/env
+                    bat 'docker-compose up -d --force-recreate --build'
                 }
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') { // Name as configured in Jenkins
+                withSonarQubeEnv('SonarQube') {
                     withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
                         script {
                             def scannerHome = tool 'SonarScanner'
-                            bat "\"${scannerHome}\\bin\\sonar-scanner\" -Dsonar.token=%SONAR_TOKEN%"
+                            bat "\"${scannerHome}\\bin\\sonar-scanner\" -Dsonar.login=%SONAR_TOKEN%"
                         }
                     }
                 }
             }
         }
 
-
         stage('ZAP Baseline Scan') {
             steps {
                 script {
                     def linuxPath = toDockerPath(env.WORKSPACE)
-                    // Use conditional error handling in the bat command
                     bat """
                         docker run --rm -v "${linuxPath}:/zap/wrk" ^
                           ghcr.io/zaproxy/zaproxy:stable zap-baseline.py ^
