@@ -22,8 +22,5 @@
   "homepage": "https://github.com/SafdarJamal/campus-recruitment-system#readme",
   "devDependencies": {
     "concurrently": "^8.2.0"
-  },
-  "dependencies": {
-    "prom-client": "^15.1.3"
   }
 }
