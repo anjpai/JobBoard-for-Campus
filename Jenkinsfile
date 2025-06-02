@@ -6,7 +6,7 @@ pipeline {
         MONGO_DB_URI = credentials('MONGO_DB_URI')
         JWT_SECRET = credentials('JWT_SECRET')
         HOST = '0.0.0.0'
-        PORT = '5001'
+        PORT = '5000'
         SONAR_TOKEN = credentials('sonarqube-token')
     }
 
