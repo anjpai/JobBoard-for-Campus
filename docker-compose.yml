@@ -20,6 +20,7 @@ services:
       - JWT_SECRET=mySuperSecretJWTkey123!
     ports:
       - "5000:5000"
+  
     depends_on:
       - mongodb
 

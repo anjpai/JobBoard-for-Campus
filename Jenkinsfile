@@ -66,17 +66,18 @@ pipeline {
         stage('ZAP Baseline Scan') {
             steps {
                 script {
-                    def linuxPath = toDockerPath(env.WORKSPACE)
+                    def linuxPath = env.WORKSPACE.replaceAll('\\\\', '/').replaceAll('^([A-Za-z]):', '/$1').toLowerCase()
                     bat """
                         docker run --rm -v "${linuxPath}:/zap/wrk" ^
-                          ghcr.io/zaproxy/zaproxy:stable zap-baseline.py ^
-                          -t http://host.docker.internal:3000 ^
-                          -r zap-report.html ^
-                          -l FAIL ^
-                          -I || exit 0
+                        ghcr.io/zaproxy/zaproxy:stable zap-baseline.py ^
+                        -t http://host.docker.internal:3000 ^
+                        -r zap-report.html ^
+                        -l FAIL ^
+                        -I || exit 0
                     """
                 }
             }
         }
+
     }
 }
