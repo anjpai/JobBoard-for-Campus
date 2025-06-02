@@ -18,8 +18,8 @@ services:
     environment:
       - MONGO_DB_URI=mongodb+srv://rpaianju15:ud4l6OMYMYQvl8L4@campusrecruitment.yhnkc2u.mongodb.net/?retryWrites=true&w=majority&appName=CampusRecruitment
       - JWT_SECRET=mySuperSecretJWTkey123!
-    # ports:
-    #   - "5000:5000"
+    ports:
+      - "5000:5000"
     depends_on:
       - mongodb
 

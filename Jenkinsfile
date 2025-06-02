@@ -1,9 +1,3 @@
-def toDockerPath(winPath) {
-    winPath = winPath.replaceAll('\\\\', '/')
-    winPath = winPath.replaceAll('^([A-Za-z]):', '/$1')
-    return winPath.toLowerCase()
-}
-
 pipeline {
     agent any
 
@@ -30,43 +24,28 @@ pipeline {
             }
         }
 
-        stage('Build Docker Images') {
+        stage('Build and Deploy') {
             steps {
-                script {
-                    bat "docker build -t rpaianjali/jobboardforcampus-server:${env.BUILD_ID} -f server/Dockerfile server"
-                    bat "docker build -t rpaianjali/jobboardforcampus-client:${env.BUILD_ID} -f client/Dockerfile client"
-                }
-            }
-        }
+                lock(resource: 'backend-port-5000') {
+                    script {
+                        bat "docker build -t rpaianjali/jobboardforcampus-server:${env.BUILD_ID} -f server/Dockerfile server"
+                        bat "docker build -t rpaianjali/jobboardforcampus-client:${env.BUILD_ID} -f client/Dockerfile client"
 
-        stage('Push Images') {
-            steps {
-                script {
-                    docker.withRegistry('', 'dockerhub-creds') {
-                        docker.image("rpaianjali/jobboardforcampus-server:${env.BUILD_ID}").push()
-                        docker.image("rpaianjali/jobboardforcampus-client:${env.BUILD_ID}").push()
+                        docker.withRegistry('', 'dockerhub-creds') {
+                            docker.image("rpaianjali/jobboardforcampus-server:${env.BUILD_ID}").push()
+                            docker.image("rpaianjali/jobboardforcampus-client:${env.BUILD_ID}").push()
+                        }
+
+                        writeFile file: '.env', text: """
+                        MONGO_DB_URI=${env.MONGO_DB_URI}
+                        JWT_SECRET=${env.JWT_SECRET}
+                        HOST=${env.HOST}
+                        PORT=${env.PORT}
+                        """
+
+                        bat 'docker-compose down || exit 0'
+                        bat 'docker-compose up -d --force-recreate --build'
                     }
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                script {
-                    // Pass environment variables to docker-compose via .env file or CLI
-                    // Here we create a temporary .env file with needed variables
-                    writeFile file: '.env', text: """
-                    MONGO_DB_URI=${env.MONGO_DB_URI}
-                    JWT_SECRET=${env.JWT_SECRET}
-                    HOST=${env.HOST}
-                    PORT=${env.PORT}
-                    """
-
-                    // Stop and remove existing containers, ignoring errors
-                    bat 'docker-compose down || exit 0'
-
-                    // Start containers with detached mode and force recreate to pick new images/env
-                    bat 'docker-compose up -d --force-recreate --build'
                 }
             }
         }
